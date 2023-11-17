@@ -4,7 +4,7 @@ export interface AuthState{
 
 export interface User {
   username: string
-  accessToken: string
+  token: string
 }
 
 export interface SignUpBody {

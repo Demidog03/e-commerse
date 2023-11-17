@@ -1,12 +1,15 @@
 require("dotenv").config() // load .env variables
 const mongoose = require("mongoose") //import fresh mongoose object
-const {log} = require("mercedlogger") // import merced logger
+const {log} = require("mercedlogger")
+const {prefetchProductData} = require("../controllers/middleware"); // import merced logger
 
 //DESTRUCTURE ENV VARIABLES
 const {DATABASE_URL} = process.env 
 
 // CONNECT TO MONGO
-mongoose.connect = mongoose.connect(DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect = mongoose.connect(DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected...'))
+  .catch(err => console.log(err));
 
 // CONNECTION EVENTS
 mongoose.connection

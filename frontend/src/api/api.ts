@@ -41,7 +41,17 @@ apiWithAuthAndErrorMessaging.interceptors.response.use(undefined, async (error) 
     if (error.response?.status === 401) {
       store.dispatch(fetchLogout())
     }
-    toast.error(error.response?.data?.error ?? 'Internal Server Error')
+    toast.error(error.response?.data?.error ?? error.response?.data?.error?.message ?? 'Internal Server Error')
+  }
+  return await Promise.reject(error)
+})
+
+api.interceptors.response.use(undefined, async (error) => {
+  if (axios.isAxiosError(error)) {
+    if (error.response?.status === 401) {
+      store.dispatch(fetchLogout())
+    }
+    toast.error(error.response?.data?.error ?? error.response?.data?.error?.message ?? 'Internal Server Error')
   }
   return await Promise.reject(error)
 })

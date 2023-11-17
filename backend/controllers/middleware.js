@@ -1,7 +1,9 @@
 require("dotenv").config(); // loading env variables
+const productsData = require("../data/products.json");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Todo = require("../models/Todo");
+const Product = require("../models/Product");
 
 // CREATE CONTEXT MIDDLEWARE
 const createContext = (req, res, next) => {
@@ -10,6 +12,7 @@ const createContext = (req, res, next) => {
     models: {
       User,
       Todo,
+      Product
     },
   };
   next();
@@ -42,8 +45,26 @@ const isLoggedIn = async (req, res, next) => {
   }
 };
 
+const prefetchProductData = async (req, res, next) => {
+  const { Product } = req.context.models;
+  console.log('saving...')
+  try {
+    const existProducts = await Product.find();
+    if(existProducts.length === 0 || !existProducts) {
+      console.log('No products found, inserting data...');
+      await Product.insertMany(productsData);
+      console.log('Data insertion complete.');
+    }
+    next();
+  } catch (error) {
+    console.error('Error in prefetchProductData:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
 // export custom middleware
 module.exports = {
   isLoggedIn,
-  createContext
+  createContext,
+  prefetchProductData
 };

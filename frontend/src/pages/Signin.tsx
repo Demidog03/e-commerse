@@ -11,17 +11,49 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {useDispatch} from 'react-redux'
 import {signin} from '../store/auth/auth.slice.ts'
+import {useNavigate} from "react-router";
+import {useEffect, useState} from "react";
 
 export default function SignIn() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [error, setError] = useState<{username: string, password: string}>({username: '', password: ''})
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    console.log(data.get('username'))
+    console.log(data.get('password'))
+    setError({username: '', password: ''})
+    if(!data.get('username')) {
+      setError(prevState => (
+        {
+          ...prevState,
+          username: 'Username is required'
+        }
+      ))
+      return
+    }
+    if(!data.get('password')) {
+      setError(prevState => ({
+        ...prevState,
+        password: 'Password is required'
+      }))
+      return
+    }
     dispatch(signin({
       username: data.get('username') as string,
       password: data.get('password') as string
     }))
   };
+  // @ts-ignore
+  const navigateToSignUp = (e: MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    navigate('/signup')
+  }
+
+  useEffect(() => {
+    console.log(error)
+  }, [error])
 
   return (
         <Container component="main" maxWidth="xs">
@@ -50,6 +82,8 @@ export default function SignIn() {
                   label="Username"
                   name="username"
                   autoComplete="username"
+                  error={!!error.username}
+                  helperText={error.username}
                   autoFocus
               />
               <TextField
@@ -62,6 +96,8 @@ export default function SignIn() {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  error={!!error.password}
+                  helperText={error.password}
               />
               <Button
                   type="submit"
@@ -74,7 +110,7 @@ export default function SignIn() {
               </Button>
               <Grid container>
                 <Grid item>
-                  <Link href="/singup" variant="body2">
+                  <Link href="" variant="body2" onClick={navigateToSignUp}>
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

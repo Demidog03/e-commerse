@@ -27,6 +27,7 @@ const authSlice = createSlice<AuthState, Reducers<AuthState>>({
 export const signin = createAction<SignInBody>('auth/signin')
 export const signup = createAction<SignUpBody>('auth/signup')
 export const fetchLogout = createAction('auth/fetchLogout')
+export const fetchAuthWithToken = createAction<{token: string}>('auth/fetchAuthWithToken')
 
 export const {
   authorize,
@@ -35,6 +36,6 @@ export const {
 
 export const userSelector = (state: RootState): User | null => state.auth.user
 export const isAuthenticatedSelector = (state: RootState): boolean => !!state.auth.user
-export const tokenSelector = (state: RootState): string | undefined => state.auth.user?.accessToken
+export const tokenSelector = (state: RootState): string | undefined => state.auth.user?.token
 
 export default authSlice.reducer

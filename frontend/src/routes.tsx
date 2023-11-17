@@ -3,6 +3,7 @@ import { HomePage } from './lazyPages.tsx';
 import SignUp from './pages/Signup.tsx'
 import {AuthPageGuard} from './components/AuthPageGuard.tsx'
 import SignIn from './pages/Signin.tsx'
+import {UserPageGuard} from "./components/UserPageGuard.tsx";
 
 export const router: RouteObject[] = [
   {
@@ -15,10 +16,18 @@ export const router: RouteObject[] = [
   },
   {
     path: '/signup',
-    element: (<SignUp/>)
+    element: (
+      <UserPageGuard>
+        <SignUp/>
+      </UserPageGuard>
+    )
   },
   {
     path: '/signin',
-    element: (<SignIn/>)
+    element: (
+      <UserPageGuard>
+        <SignIn/>
+      </UserPageGuard>
+    )
   },
 ]
