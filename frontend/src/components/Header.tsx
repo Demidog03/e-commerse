@@ -13,12 +13,16 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {useSelector} from "../store";
-import {userSelector} from "../store/auth/auth.slice.ts";
+import {fetchLogout, userSelector} from "../store/auth/auth.slice.ts";
+import {useNavigate} from "react-router";
+import {useDispatch} from "react-redux";
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = ['Products'];
+const settings = ['Logout'];
 
 function Header() {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const profile = useSelector(userSelector)
@@ -31,23 +35,26 @@ function Header() {
   };
 
   const handleCloseNavMenu = () => {
+    navigate('/')
     setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const handleLogout = () => {
+    dispatch(fetchLogout())
+  }
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href=""
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -57,8 +64,9 @@ function Header() {
               color: 'inherit',
               textDecoration: 'none',
             }}
+            onClick={() => navigate('/')}
           >
-            LOGO
+            Shop
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -152,7 +160,7 @@ function Header() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center" onClick={setting === 'Logout' ? () => handleLogout() : () => {}}>{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

@@ -8,12 +8,13 @@ import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import {FC} from "react";
+import {Rating as RatingType} from "../../store/products/product.types.ts";
+import {Badge, Box, Chip, Rating } from '@mui/material';
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -30,19 +31,29 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RecipeReviewCard() {
+interface ProductCardProps {
+  title: string
+  price: number
+  description: string
+  category: string
+  image: string
+  rating: RatingType
+}
+
+const ProductCard: FC<ProductCardProps> = ({title, image, category, rating, price, description}) => {
   const [expanded, setExpanded] = React.useState(false);
 
-  const handleExpandClick = () => {
+  const handleExpandClick = (e: any) => {
+    e.stopPropagation()
     setExpanded(!expanded);
   };
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 350, height: '100%' }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+            {title[0]}
           </Avatar>
         }
         action={
@@ -50,42 +61,44 @@ export default function RecipeReviewCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title={title}
+        subheader={category}
       />
-      <CardMedia
-        component="img"
-        height="194"
-        image="/static/images/cards/paella.jpg"
-        alt="Paella dish"
-      />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Box>
+        <CardMedia
+          component="img"
+          height="300"
+          image={image}
+          alt="Paella dish"
+          sx={{ width: 350 }}
+        />
         <CardContent>
+          <Chip label={"$ " + price} />
         </CardContent>
-      </Collapse>
+        <CardActions disableSpacing>
+          <Badge badgeContent={rating.count} color="primary" max={999}>
+            <IconButton aria-label="add to favorites">
+              <FavoriteIcon />
+            </IconButton>
+          </Badge>
+          <Rating name="read-only" value={rating.rate} readOnly />
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
+        </CardActions>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <CardContent>
+            {description}
+          </CardContent>
+        </Collapse>
+      </Box>
     </Card>
   );
 }
+
+export default ProductCard

@@ -4,6 +4,7 @@ import SignUp from './pages/Signup.tsx'
 import {AuthPageGuard} from './components/AuthPageGuard.tsx'
 import SignIn from './pages/Signin.tsx'
 import {UserPageGuard} from "./components/UserPageGuard.tsx";
+import Product from "./pages/Product.tsx";
 
 export const router: RouteObject[] = [
   {
@@ -29,5 +30,18 @@ export const router: RouteObject[] = [
         <SignIn/>
       </UserPageGuard>
     )
+  },
+  {
+    path: '/product',
+    children: [
+      {
+        path: ':id',
+        element: (
+          <AuthPageGuard>
+            <Product/>
+          </AuthPageGuard>
+        )
+      }
+    ]
   },
 ]

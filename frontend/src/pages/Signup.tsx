@@ -12,16 +12,38 @@ import Container from '@mui/material/Container';
 import {useDispatch} from "react-redux";
 import {signup} from "../store/auth/auth.slice.ts";
 import {useNavigate} from "react-router";
+import {useState} from "react";
 
 export default function SignUp() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [error, setError] = useState<{username: string, password: string}>({username: '', password: ''})
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    console.log(data.get('username'))
+    console.log(data.get('password'))
+    setError({username: '', password: ''})
+    if(!data.get('username')) {
+      setError(prevState => (
+        {
+          ...prevState,
+          username: 'Username is required'
+        }
+      ))
+      return
+    }
+    if(!data.get('password')) {
+      setError(prevState => ({
+        ...prevState,
+        password: 'Password is required'
+      }))
+      return
+    }
     dispatch(signup({
       username: data.get('username') as string,
-      password: data.get('password')as string
+      password: data.get('password') as string
     }))
   };
   // @ts-ignore
@@ -49,25 +71,30 @@ export default function SignUp() {
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
               <TextField
-                  color="primary"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
+                color="primary"
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                error={!!error.username}
+                helperText={error.username}
+                autoFocus
               />
               <TextField
-                  color="primary"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
+                color="primary"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                error={!!error.password}
+                helperText={error.password}
               />
               <Button
                   type="submit"
