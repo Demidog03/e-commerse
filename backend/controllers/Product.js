@@ -48,7 +48,7 @@ router.get("/recommended/:id", isLoggedIn, async (req, res) => {
       res.status(400).json({ error: 'There are no products' });
     }
 
-    const recommendedProducts = getRecommendedProducts([...allProducts], product).map(({ _doc }) => _doc);
+    const recommendedProducts = getRecommendedProducts([...allProducts].map(({ _doc }) => _doc), product);
 
     res.json({ recommendedProducts });
   } catch (error) {

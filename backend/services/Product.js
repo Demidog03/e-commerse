@@ -31,21 +31,23 @@ function countSimilarWordsInTitle(products, targetProduct) { //complexity of O(n
 }
 
 function sortProductsByPriority(products) { //complexity O(n log n)
-  return products.sort((a, b) => {
-    if (a.similarDescriptionWordsCount > b.similarDescriptionWordsCount) {
+  const recommendedProducts = products.sort((a, b) => {
+    if (a.similarTitleWordsCount > b.similarTitleWordsCount) {
       return -1;
-    } else if (a.similarDescriptionWordsCount < b.similarDescriptionWordsCount) {
+    } else if (a.similarTitleWordsCount < b.similarTitleWordsCount) {
       return 1;
     } else {
-      if (a.similarTitleWordsCount > b.similarTitleWordsCount) {
+      if (a.similarDescriptionWordsCount > b.similarDescriptionWordsCount) {
         return -1;
-      } else if (a.similarTitleWordsCount < b.similarTitleWordsCount) {
+      } else if (a.similarDescriptionWordsCount < b.similarDescriptionWordsCount) {
         return 1;
       } else {
         return 0;
       }
     }
-  }).map(({ similarDescriptionWordsCount, similarTitleWordsCount, ...rest }) => rest);
+  }).map(({ ...rest }) => rest);
+
+  return recommendedProducts
 }
 
 const getRecommendedProducts = (products, targetProduct) => {  //overall time complexity O(nm) n - number of products, m - number of words in the product description or title
